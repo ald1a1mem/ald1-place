@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>ALD1 朝聖地</title>
 
-<link rel="icon" type="image/png" href="https://github.com/ald1a1mem.png">
+    <link rel="icon" type="image/png" href="https://github.com/ald1a1mem.png">
 
     <style>
         /* 基本排版樣式 */
@@ -17,9 +17,44 @@
             padding-bottom: 8px; 
         }
 
+        /* 宣告聲明的小框框樣式 */
+        .disclaimer {
+            background: #eef2f5;
+            border-left: 4px solid #A1BAD0;
+            padding: 10px 14px;
+            font-size: 13px;
+            color: #556677;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            line-height: 1.5;
+        }
+
+        /* 分類按鈕區塊樣式 */
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        .filter-btn {
+            background: #fff;
+            color: #556677;
+            border: 1px solid #d0dce5;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .filter-btn:hover, .filter-btn.active {
+            background: #A1BAD0;
+            color: #fff;
+            border-color: #A1BAD0;
+        }
+
         .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); border-left: 4px solid #A1BAD0; }
         .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-        .tag { background: #eef2f5; color: #556677; padding: 4px 8px; border-radius: 4px; font-size: 12px; }
+        .tag { background: #eef2f5; color: #556677; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
         
         /* 頁尾版權樣式 */
         footer {
@@ -45,7 +80,18 @@
     <h1>ALD1 朝聖地</h1>
     <p>此網站為記錄成員們去過的地方 *非即時更新</p>
 
-    <div class="card">
+    </div>
+
+    <!-- 分類按鈕 -->
+    <div class="filter-buttons">
+        <button class="filter-btn active" onclick="filterCategory('all', this)">全部</button>
+        <button class="filter-btn" onclick="filterCategory('shooting', this)">拍攝地</button>
+        <button class="filter-btn" onclick="filterCategory('restaurant', this)">餐廳</button>
+        <button class="filter-btn" onclick="filterCategory('mart', this)">超商</button>
+    </div>
+
+    <!-- 地點 1：拍攝地 -->
+    <div class="card" data-category="shooting">
         <img src="1.jpg" alt="地點封面">
         <h2>地點：啄木鳥青少年修煉院(딱따구리 청소년수련원)</h2>
         <span class="tag">拍攝地</span>
@@ -54,7 +100,8 @@
         <p><strong>筆記：</strong>  </p>
     </div>
 
-    <div class="card">
+    <!-- 地點 2：餐廳 (對應你原本的 Standard Bread，分類設為 restaurant) -->
+    <div class="card" data-category="restaurant">
         <img src="2.jpg" alt="地點封面">
         <h2>地點：Standard Bread 聖水店(스탠다드브레드 성수)</h2>
         <span class="tag">食物</span>
@@ -67,6 +114,26 @@
     <footer>
         Info: <a href="https://x.com/ald1_place" target="_blank">@ald1_place (X)</a> &nbsp;|&nbsp; Site by @ald1.a1mem
     </footer>
+
+    <!-- 分類篩選的 JavaScript 程式碼 -->
+    <script>
+        function filterCategory(category, btn) {
+            // 切換按鈕的選取樣式
+            const buttons = document.querySelectorAll('.filter-btn');
+            buttons.forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            // 篩選卡片顯示與隱藏
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
 
 </body>
 </html>
