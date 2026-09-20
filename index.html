@@ -10,7 +10,7 @@
         /* 基本排版樣式 */
         body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 15px; background: #f9f9f9; color: #333; }
         
-        /* 網頁主標題換成新主色 #A1BAD0 */
+        /* 網頁主標題主色 #A1BAD0 */
         h1 { 
             color: #A1BAD0; 
             border-bottom: 2px solid #A1BAD0; 
@@ -47,7 +47,67 @@
         }
 
         .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); border-left: 4px solid #A1BAD0; }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
+        
+        /* 圖片輪播容器樣式 */
+        .slider-container {
+            position: relative;
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+            border-radius: 8px;
+            background: #000;
+            margin-bottom: 12px;
+        }
+        .slider-track {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.3s ease-in-out;
+        }
+        .slider-track img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+        /* 左右切換按鈕 */
+        .slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+            z-index: 2;
+        }
+        .slider-btn:hover {
+            background: rgba(0, 0, 0, 0.8);
+        }
+        .slider-btn.prev { left: 10px; }
+        .slider-btn.next { right: 10px; }
+
+        /* 圖片張數指示器 (例如 1/3) */
+        .slider-counter {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 3px 8px;
+            font-size: 12px;
+            border-radius: 12px;
+            z-index: 2;
+        }
+
         .tag { background: #eef2f5; color: #556677; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
         
         /* 頁尾版權樣式 */
@@ -79,7 +139,7 @@
         <button class="filter-btn active" onclick="filterCategory('all', this)">全部</button>
         <button class="filter-btn" onclick="filterCategory('shooting', this)">拍攝地</button>
         <button class="filter-btn" onclick="filterCategory('restaurant', this)">餐廳</button>
-        <button class="filter-btn" onclick="filterCategory('mart', this)">超商</button>
+        <button class="filter-btn" onclick="filterCategory('play', this)">遊玩</button>
     </div>
 
     <!-- 卡片列表開始 (之後要新增的地點，直接往這個區塊的最下方貼上即可！) -->
@@ -87,6 +147,8 @@
 
         <!-- 地點 1：拍攝地 -->
         <div class="card" data-category="shooting">
+    <div class="slider-container">
+        <div class="slider-track">
             <img src="1.jpg" alt="地點封面">
             <h2>地點：啄木鳥青少年修煉院(딱따구리 청소년수련원)</h2>
             <span class="tag">拍攝地</span>
@@ -95,8 +157,11 @@
             <p><strong>筆記：</strong>  </p>
         </div>
 
+
         <!-- 地點 2：餐廳 -->
         <div class="card" data-category="restaurant">
+    <div class="slider-container">
+        <div class="slider-track">
             <img src="2.jpg" alt="地點封面">
             <h2>地點：Standard Bread 聖水店(스탠다드브레드 성수)</h2>
             <span class="tag">餐廳</span>
@@ -105,18 +170,24 @@
             <p><strong>筆記：</strong> 經典原味麵包 - 半個</p>
         </div>
 
+
         <!-- 地點 3：餐廳 -->
         <div class="card" data-category="restaurant">
+    <div class="slider-container">
+        <div class="slider-track">
             <img src="3.jpg" alt="地點封面">
             <h2>地點：陸會正宗鮭(육회바른연어)</h2>
             <span class="tag">餐廳</span>
             <p><strong>出處：</strong> 260917 俊抒 PC</p>
-            <p><strong>地址：</strong> </p>
+            <p><strong>地址：</strong> 無詳細地址 </p>
             <p><strong>筆記：</strong> 鮭魚蓋飯 & 鮭魚壽司</p>
         </div>
 
+
         <!-- 地點 4：餐廳 -->
         <div class="card" data-category="restaurant">
+    <div class="slider-container">
+        <div class="slider-track">
             <img src="4.jpg" alt="地點封面">
             <h2>地點：石島海帶湯 弘大直營店(돌섬미역국 홍대직영점)</h2>
             <span class="tag">餐廳</span>
@@ -125,7 +196,10 @@
             <p><strong>筆記：</strong>  </p>
         </div>
 
+
     <div class="card" data-category="restaurant">
+    <div class="slider-container">
+        <div class="slider-track">
         <img src="5.jpg" alt="地點封面">
         <h2>地點：李如牛骨湯 總店(이여곰탕 본점)</h2>
         <span class="tag">餐廳</span>
@@ -134,16 +208,28 @@
         <p><strong>筆記：</strong>有其他連鎖分店</p>
     </div>
 
-    <div class="card" data-category="restaurant">
-        <img src="6.jpg" alt="地點封面">
+
+<div class="card" data-category="restaurant">
+        <div class="slider-container" id="photo_1">
+            <div class="slider-track">
+                <img src="6.jpg" alt="照片 1">
+                <img src="7.jpg" alt="照片 2">
+                <img src="8.jpg" alt="照片 3">
+            </div>
+            <!-- 左右切換按鈕 (注意 onclick 裡面的 'slider-new' 要跟上面 id 一致) -->
+            <button class="slider-btn prev" onclick="changeSlide('photo_1', -1)">❮</button>
+            <button class="slider-btn next" onclick="changeSlide('photo_1', 1)">❯</button>
+            <div class="slider-counter">1 / 3</div>
+        </div>
+
         <h2>地點：Sandwiches & Go(샌드위치 앤 고)</h2>
         <span class="tag">餐廳</span>
         <p><strong>出處：</strong> 260917 俊抒 PC</p>
         <p><strong>地址：</strong> 首爾特別市 西大門區 延世路2街 89 2樓局部(서울특별시 서대문구 연세로2길 89 2층 일부)</p>
-        <p><strong>筆記：</strong>前往該店前請先與店家確認或詢問後再前往</p>
+        <p><strong>筆記：</strong> 前往該店前請先與店家確認或詢問後再前往 </p>
     </div>
 
-    </div>
+</div>
     <!-- 卡片列表結束 -->
 
     <!-- 頁尾版權宣告 -->
@@ -151,15 +237,14 @@
         Info: <a href="https://x.com/ald1_place" target="_blank">@ald1_place (X)</a> &nbsp;|&nbsp; Site by @ald1.a1mem
     </footer>
 
-    <!-- 分類篩選的 JavaScript 程式碼 -->
+    <!-- JavaScript 程式碼：分類篩選與圖片手動切換 -->
     <script>
+        // 分類篩選功能
         function filterCategory(category, btn) {
-            // 切換按鈕的選取樣式
             const buttons = document.querySelectorAll('.filter-btn');
             buttons.forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
 
-            // 篩選卡片顯示與隱藏
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
                 if (category === 'all' || card.dataset.category === category) {
@@ -168,6 +253,39 @@
                     card.style.display = 'none';
                 }
             });
+        }
+
+        // 記錄每個 slider 目前看到第幾張圖 (從 0 開始算)
+        const slideIndexes = {};
+
+        function changeSlide(sliderId, direction) {
+            const container = document.getElementById(sliderId);
+            const track = container.querySelector('.slider-track');
+            const images = track.querySelectorAll('img');
+            const totalImages = images.length;
+            const counter = container.querySelector('.slider-counter');
+
+            if (!slideIndexes[sliderId]) {
+                slideIndexes[sliderId] = 0;
+            }
+
+            // 計算切換後的索引
+            slideIndexes[sliderId] += direction;
+
+            // 循環切換（到最後一張再按下一張會回到第一張）
+            if (slideIndexes[sliderId] >= totalImages) {
+                slideIndexes[sliderId] = 0;
+            } else if (slideIndexes[sliderId] < 0) {
+                slideIndexes[sliderId] = totalImages - 1;
+            }
+
+            // 移動圖片軌道
+            track.style.transform = `translateX(-${slideIndexes[sliderId] * 100}%)`;
+
+            // 更新右下角數字
+            if (counter) {
+                counter.innerText = `${slideIndexes[sliderId] + 1} / ${totalImages}`;
+            }
         }
     </script>
 
