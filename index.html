@@ -1,274 +1,854 @@
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
-    <meta charset="UTF-8">
-    <title>ALD1 朝聖地</title>
-
-    <link rel="icon" type="image/png" href="https://github.com/ald1a1mem.png">
-
-    <style>
-        /* 基本排版樣式 */
-        body { font-family: sans-serif; max-width: 800px; margin: 20px auto; padding: 0 15px; background: #f9f9f9; color: #333; }
-        
-        /* 網頁主標題換成新主色 #A1BAD0 */
-        h1 { 
-            color: #A1BAD0; 
-            border-bottom: 2px solid #A1BAD0; 
-            padding-bottom: 8px; 
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ALD1 朝聖地</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&family=Noto+Sans+KR:wght@400;500;700&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', '"Noto Sans TC"', '"Noto Sans KR"', 'sans-serif'],
+            kr: ['"Noto Sans KR"', '"Noto Sans TC"', 'sans-serif'],
+          },
+          colors: {
+            paper: '#FAF7F2',
+            card: '#FFFFFF',
+            ink: '#1E1B18',
+            muted: '#6E665F',
+            accent: '#E05A47',
+            accentSoft: '#FFF0ED',
+            naver: '#03C75A',
+            gmaps: '#4285F4',
+          },
+          boxShadow: {
+            soft: '0 10px 30px -10px rgba(30, 27, 24, 0.08)',
+            card: '0 4px 20px -4px rgba(30, 27, 24, 0.06), 0 1px 3px rgba(30, 27, 24, 0.04)',
+            cardHover: '0 18px 36px -12px rgba(30, 27, 24, 0.14), 0 4px 12px rgba(30, 27, 24, 0.05)',
+          }
         }
-
-        /* 分類按鈕區塊樣式 */
-        .filter-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 25px;
-            flex-wrap: wrap;
-        }
-        .filter-btn {
-            background: #fff;
-            color: #556677;
-            border: 1px solid #d0dce5;
-            padding: 8px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-        .filter-btn:hover, .filter-btn.active {
-            background: #A1BAD0;
-            color: #fff;
-            border-color: #A1BAD0;
-        }
-
-        /* 卡片列表容器：自動把後新增的卡片反轉排到最上方 */
-        #card-list {
-            display: flex;
-            flex-direction: column-reverse;
-        }
-
-        .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.08); border-left: 4px solid #A1BAD0; }
-        .card img { width: 100%; height: 200px; object-fit: cover; border-radius: 8px; }
-        .tag { background: #eef2f5; color: #556677; padding: 4px 8px; border-radius: 4px; font-size: 12px; display: inline-block; margin-bottom: 8px; }
-        
-        /* 頁尾版權樣式 */
-        footer {
-            text-align: center;
-            margin-top: 40px;
-            padding: 20px 0;
-            color: #777;
-            font-size: 14px;
-            border-top: 1px solid #e0e0e0;
-        }
-        footer a {
-            color: #A1BAD0;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-.map-btn {
-    display: inline-block;
-    background: #eef2f5;
-    color: #556677;
-    padding: 2px 8px;
-    font-size: 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    margin-left: 6px;
-    border: 1px solid #d0dce5;
-    transition: all 0.2s;
-}
-.map-btn:hover {
-    background: #A1BAD0;
-    color: #fff;
-    border-color: #A1BAD0;
-}
-
-    </style>
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #FAF7F2;
+      background-image: radial-gradient(#E5DDD2 1px, transparent 1px);
+      background-size: 24px 24px;
+      color: #1E1B18;
+    }
+    .glass-nav {
+      background: rgba(250, 247, 242, 0.85);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+    }
+    @keyframes popIn {
+      0% { transform: scale(0.8); }
+      60% { transform: scale(1.2); }
+      100% { transform: scale(1); }
+    }
+    .animate-pop {
+      animation: popIn 0.28s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+  </style>
 </head>
-<body>
+<body class="min-h-screen flex flex-col selection:bg-amber-200 selection:text-ink">
 
-    <h1>ALD1 朝聖地</h1>
-    <p>此網站為記錄成員們去過的地方 *非即時更新</p>
+  <!-- 頂部導覽列 -->
+  <header class="glass-nav sticky top-0 z-30 border-b border-stone-200/80">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+      <a href="#top" onclick="resetAllFilters()" class="flex items-center gap-2.5 group">
+        <div class="w-9 h-9 rounded-xl bg-ink text-amber-300 flex items-center justify-center font-extrabold text-sm tracking-tight shadow-sm group-hover:scale-105 transition-transform">
+          A1
+        </div>
+        <div class="flex items-baseline gap-2">
+          <span class="font-bold text-lg tracking-tight text-ink">ALD1 朝聖地</span>
+          <span class="hidden sm:inline-block text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 font-medium">非即時更新</span>
+        </div>
+      </a>
 
-    <!-- 分類按鈕 -->
-    <div class="filter-buttons">
-        <button class="filter-btn active" onclick="filterCategory('all', this)">全部</button>
-        <button class="filter-btn" onclick="filterCategory('shooting', this)">拍攝地</button>
-        <button class="filter-btn" onclick="filterCategory('restaurant', this)">餐廳</button>
-        <button class="filter-btn" onclick="filterCategory('other', this)">其他</button>
+      <div class="flex items-center gap-2 sm:gap-3">
+        <button
+          id="visitedToggleBtn"
+          onclick="toggleVisitedOnly()"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium border transition-all cursor-pointer bg-white text-ink border-stone-200 hover:border-rose-300 hover:bg-rose-50/60"
+          title="只看已踩點地點"
+        >
+          <i class="fa-solid fa-heart text-rose-500"></i>
+          <span>已踩點</span>
+          <span id="visitedBadgeCount" class="px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 text-xs font-bold">0</span>
+        </button>
+
+        <a
+          href="https://x.com/ald1_place"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-medium bg-ink text-white hover:bg-stone-800 transition-colors"
+        >
+          <i class="fa-brands fa-x-twitter"></i>
+          <span class="hidden sm:inline">@ald1_place</span>
+        </a>
+      </div>
     </div>
+  </header>
 
-    <!-- 卡片列表開始 (之後要新增的地點，直接往這個區塊的最下方貼上即可！) -->
-    <div id="card-list">
-
-        <!-- 地點 1-->
-        <div class="card" data-category="shooting">
-            <img src="1.jpg" alt="地點封面">
-            <h2>地點：啄木鳥青少年修煉院(딱따구리 청소년수련원)</h2>
-            <span class="tag">拍攝地</span>
-            <p><strong>出處：</strong> ONE DREAM FOREVER EP.19、20</p>
-            <p><strong>地址：</strong> 京畿道 楊州市 光積面 賢石路 313-44(경기 양주시 광적면 현석로 313-44)
-        <a href="https://map.naver.com/v5/search/경기 양주시 광적면 현석로 313-44" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=경기 양주시 광적면 현석로 313-44" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
-
-        <!-- 地點 2 -->
-        <div class="card" data-category="restaurant">
-            <img src="2.jpg" alt="地點封面">
-            <h2>地點：Standard Bread 聖水店(스탠다드브레드 성수)</h2>
-            <span class="tag">餐廳</span>
-            <p><strong>出處：</strong> 260916 俊抒 PC JP 日記</p>
-            <p><strong>地址：</strong> 首爾市城東區聖水二路18街37號1樓(서울 성동구 성수이로18길 37 1층)
-        <a href="https://map.naver.com/v5/search/서울 성동구 성수이로18길 37 1층" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=서울 성동구 성수이로18길 37 1층" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
-
-        <!-- 地點 3-->
-        <div class="card" data-category="restaurant">
-            <img src="3.jpg" alt="地點封面">
-            <h2>地點：陸會正宗鮭(육회바른연어)</h2>
-            <span class="tag">餐廳</span>
-            <p><strong>出處：</strong> 260917 俊抒 PC</p>
-            <p><strong>地址：</strong>無詳細地址資訊 </p>
-            <p><strong>筆記：</strong> 鮭魚蓋飯 & 鮭魚壽司</p>
+  <!-- 主視覺標題區 -->
+  <section id="top" class="max-w-6xl mx-auto w-full px-4 sm:px-6 pt-8 pb-6">
+    <div class="bg-white rounded-3xl p-6 sm:p-8 shadow-soft border border-stone-200/70 relative overflow-hidden">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6 relative z-10">
+        <div class="space-y-2.5 max-w-2xl">
+          <h1 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-ink">
+            ALD1 朝聖地
+          </h1>
+          <p class="text-muted text-sm sm:text-base leading-relaxed">
+            此網站為記錄成員們去過的地方 · 非即時更新
+            <span class="hidden sm:inline text-stone-300 mx-1">|</span>
+            <span class="block sm:inline text-amber-800 font-medium mt-1 sm:mt-0">
+              點擊卡片愛心印章即可記錄你的個人踩點進度 ✨
+            </span>
+          </p>
         </div>
 
-        <!-- 地點 4 -->
-        <div class="card" data-category="restaurant">
-            <img src="4.jpg" alt="地點封面">
-            <h2>地點：石島海帶湯 弘大直營店(돌섬미역국 홍대직영점)</h2>
-            <span class="tag">餐廳</span>
-            <p><strong>出處：</strong> 260917 相沅 PC</p>
-            <p><strong>地址：</strong> 首爾特別市麻浦區臥牛山路21街 12-6 1樓(서울특별시 마포구 와우산로21길 12-6 1층)
-        <a href="https://map.naver.com/v5/search/서울특별시 마포구 와우산로21길 12-6 1층" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=서울특별시 마포구 와우산로21길 12-6 1층" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+        <!-- 統計與朝聖進度卡 -->
+        <div class="bg-paper rounded-2xl p-4 sm:p-5 border border-stone-200/80 min-w-full sm:min-w-[310px] lg:w-[340px] space-y-3">
+          <div class="grid grid-cols-3 gap-2 text-center">
+            <div class="bg-white rounded-xl py-2 px-2 border border-stone-200/60">
+              <div id="statTotal" class="text-xl font-extrabold text-ink">11</div>
+              <div class="text-[11px] text-muted font-medium">總計地點</div>
+            </div>
+            <div class="bg-white rounded-xl py-2 px-2 border border-stone-200/60">
+              <div id="statFilming" class="text-xl font-extrabold text-indigo-600">4</div>
+              <div class="text-[11px] text-muted font-medium">拍攝地</div>
+            </div>
+            <div class="bg-white rounded-xl py-2 px-2 border border-stone-200/60">
+              <div id="statFood" class="text-xl font-extrabold text-amber-600">7</div>
+              <div class="text-[11px] text-muted font-medium">餐廳美食</div>
+            </div>
+          </div>
 
-        <!-- 地點 5  --> 
-    <div class="card" data-category="restaurant">
-        <img src="5.jpg" alt="地點封面">
-        <h2>地點：李如牛骨湯 總店(이여곰탕 본점)</h2>
-        <span class="tag">餐廳</span>
-        <p><strong>出處：</strong> 260917 LEO PC</p>
-        <p><strong>地址：</strong> 首爾特別市 瑞草區 瑞草大路46路 19-15(서울 서초구 서초대로46길 19-15)
-        <a href="https://map.naver.com/v5/search/서울 서초구 서초대로46길 19-15" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=서울 서초구 서초대로46길 19-15" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs font-semibold">
+              <span class="text-ink flex items-center gap-1.5">
+                <i class="fa-solid fa-passport text-rose-500"></i>
+                我的朝聖進度
+              </span>
+              <span id="progressText" class="text-rose-600">0 / 11 (0%)</span>
+            </div>
+            <div class="w-full h-2.5 bg-stone-200/80 rounded-full overflow-hidden">
+              <div id="progressBar" class="h-full bg-gradient-to-r from-rose-500 to-amber-500 rounded-full transition-all duration-500" style="width: 0%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- 地點 6 --> 
-    <div class="card" data-category="restaurant">
-        <img src="6.jpg" alt="地點封面">
-        <h2>地點：Sandwiches & Go(샌드위치 앤 고)</h2>
-        <span class="tag">餐廳</span>
-        <p><strong>出處：</strong> 260917 俊抒 PC</p>
-        <p><strong>地址：</strong> 首爾特別市 西大門區 延世路2街 89 2樓局部(서울특별시 서대문구 연세로2길 89 2층 일부)
-        <a href="https://map.naver.com/v5/search/서울특별시 서대문구 연세로2길 89 2층 일부" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=서울특별시 서대문구 연세로2길 89 2층 일부" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+  <!-- 搜尋與篩選控制列 -->
+  <section class="max-w-6xl mx-auto w-full px-4 sm:px-6 pb-6">
+    <div class="bg-white/90 rounded-2xl p-4 sm:p-5 shadow-card border border-stone-200/70 space-y-4">
+      <div class="flex flex-col md:flex-row gap-3">
+        <div class="relative flex-1">
+          <i class="fa-solid fa-magnifying-glass absolute left-4 top-1/2 -translate-y-1/2 text-stone-400 text-sm"></i>
+          <input
+            id="searchInput"
+            type="text"
+            oninput="handleSearch(this.value)"
+            placeholder="搜尋店名、韓文、聖水、弘大、海帶湯、牛骨湯、EP.19..."
+            class="w-full pl-10 pr-10 py-2.5 rounded-xl bg-paper border border-stone-200 text-sm text-ink placeholder:text-stone-400 focus:outline-none focus:ring-2 focus:ring-amber-400/70 focus:border-amber-400 transition-all"
+          />
+          <button
+            id="clearSearchBtn"
+            onclick="clearSearch()"
+            class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-stone-400 hover:text-ink p-1 cursor-pointer"
+            title="清除搜尋"
+          >
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
 
-        <!-- 地點 7-->    
-<div class="card" data-category="restaurant">
-        <img src="7.jpg" alt="地點封面">
-        <h2>地點：白風車製菓店(하얀풍차제과점)</h2>
-        <span class="tag">餐廳</span>
-        <p><strong>出處：</strong>260909 相炫 PC</p>
-        <p><strong>地址：</strong> 京畿道 水原市 靈通區 靈通路 195 黃金廣場 1樓(경기 수원시 영통구 영통로 195 골든스퀘어 1층)
-        <a href="https://map.naver.com/v5/search/경기 수원시 영통구 영통로 195 골든스퀘어 1층" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=경기 수원시 영통구 영통로 195 골든스퀘어 1층" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+        <div id="categoryTabs" class="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
+          <button data-cat="全部" onclick="setCategory('全部')" class="cat-btn active shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-ink text-white shadow-sm">
+            全部地點 <span id="countAll" class="ml-1 opacity-75 text-xs">11</span>
+          </button>
+          <button data-cat="拍攝地" onclick="setCategory('拍攝地')" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-paper text-muted hover:text-ink hover:bg-stone-200/70">
+            <i class="fa-solid fa-clapperboard mr-1 text-indigo-500"></i>拍攝地 <span id="countFilming" class="ml-1 opacity-75 text-xs">4</span>
+          </button>
+          <button data-cat="餐廳" onclick="setCategory('餐廳')" class="cat-btn shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-paper text-muted hover:text-ink hover:bg-stone-200/70">
+            <i class="fa-solid fa-utensils mr-1 text-amber-600"></i>餐廳 <span id="countFood" class="ml-1 opacity-75 text-xs">7</span>
+          </button>
+        </div>
+      </div>
 
-        <!-- 地點 8-->    
-<div class="card" data-category="shooting">
-        <img src="8.jpg" alt="地點封面">
-        <h2>地點：蔚山療癒民宿(울산 힐링펜션)</h2>
-        <span class="tag">拍攝地</span>
-        <p><strong>出處：</strong> Untitled_27</p>
-        <p><strong>地址：</strong> 蔚山廣域市 東區 朱田海岸길 212(울산 동구 주전해안길 212)
-        <a href="https://map.naver.com/v5/search/울산 동구 주전해안길 212" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=울산 동구 주전해안길 212" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+      <!-- 成員 / 標籤篩選列 -->
+      <div class="flex flex-wrap items-center gap-2 pt-3 border-t border-stone-100">
+        <span class="text-xs font-semibold text-muted flex items-center gap-1 mr-1">
+          <i class="fa-solid fa-tag text-amber-600"></i>
+          篩選：
+        </span>
+        <div id="memberFilters" class="flex flex-wrap items-center gap-1.5"></div>
 
-        <!-- 地點 9-->    
-<div class="card" data-category="shooting">
-        <img src="9.jpg" alt="地點封面">
-        <h2>地點：旺山海水浴場(왕산해수욕장)</h2>
-        <span class="tag">拍攝地</span>
-        <p><strong>出處：</strong> ONE DREAM FOREVER EP.23</p>
-        <p><strong>地址：</strong> 仁川廣域市 中區 乙旺洞 旺山海水浴場(인천 중구 을왕동 왕산해수욕장)
-        <a href="https://map.naver.com/v5/search/인천 중구 을왕동 왕산해수욕장" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=인천 중구 을왕동 왕산해수욕장" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
+        <button
+          id="resetFiltersBtn"
+          onclick="resetAllFilters()"
+          class="hidden ml-auto text-xs font-semibold text-rose-600 hover:text-rose-700 hover:underline cursor-pointer"
+        >
+          重設所有條件
+        </button>
+      </div>
+    </div>
+  </section>
 
-        <!-- 地點 10-->    
-<div class="card" data-category="shooting">
-        <img src="10.jpg" alt="地點封面">
-        <h2>地點：Jayden 29 民宿(제이든29펜션)</h2>
-        <span class="tag">拍攝地</span>
-        <p><strong>出處：</strong> ONE DREAM FOREVER EP.24</p>
-        <p><strong>地址：</strong> 仁川廣域市 中區 龍游西路302번길 18 Jayden 29 民宿(인천 중구 용유서로302번길 18 제이든29 펜션)
-        <a href="https://map.naver.com/v5/search/인천 중구 용유서로302번길 18 제이든29 펜션" target="_blank" class="map-btn">Naver 地圖</a>
-        <a href="https://www.google.com/maps/search/?api=1&query=인천 중구 용유서로302번길 18 제이든29 펜션" target="_blank" class="map-btn">Google 地圖</a>
-    </p>
-    <p><strong>筆記：</strong> </p>
-</div>
-
-        <!-- 地點 11-->    
-<div class="card" data-category="restaurant">
-        <img src="11.jpg" alt="地點封面">
-        <h2>地點：Nabeya / 鍋屋(나베야)</h2>
-        <span class="tag">餐廳</span>
-        <p><strong>出處：</strong> 260910 LEO PC</p>
-        <p><strong>地址：</strong> 無詳細地址資訊</p>
-        <p><strong>筆記：</strong> 連鎖店 </p>
+  <!-- 地點卡片列表 -->
+  <main class="max-w-6xl mx-auto w-full px-4 sm:px-6 pb-16 flex-1">
+    <div class="flex items-center justify-between mb-4">
+      <p id="resultSummary" class="text-sm text-muted font-medium">顯示全部 11 個朝聖地點</p>
     </div>
 
+    <div id="placesGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 
+    <!-- 空狀態 -->
+    <div id="emptyState" class="hidden bg-white rounded-3xl p-12 text-center border border-stone-200/80 shadow-card mt-4">
+      <div class="w-16 h-16 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mx-auto mb-4">
+        <i class="fa-solid fa-map-location-dot"></i>
+      </div>
+      <h3 class="text-lg font-bold text-ink mb-1">找不到符合條件的朝聖地點</h3>
+      <p class="text-sm text-muted mb-5">試試看清除關鍵字，或切換其他分類／成員標籤吧！</p>
+      <button onclick="resetAllFilters()" class="px-5 py-2.5 rounded-xl bg-ink text-white text-sm font-semibold hover:bg-stone-800 transition-colors cursor-pointer">
+        顯示全部地點
+      </button>
     </div>
-    <!-- 卡片列表結束 -->
+  </main>
 
-    <!-- 頁尾版權宣告 -->
-    <footer>
-        Info: <a href="https://x.com/ald1_place" target="_blank">@ald1_place (X)</a> &nbsp;|&nbsp; Site by @ald1.a1mem
-    </footer>
+  <!-- 圖片放大燈箱 -->
+  <div id="lightboxModal" onclick="closeLightbox(event)" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+      <button onclick="closeLightbox()" class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full bg-black/60 text-white hover:bg-black/80 flex items-center justify-center cursor-pointer" aria-label="關閉預覽">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+      <img id="lightboxImg" src="" alt="" class="w-full max-h-[75vh] object-contain bg-stone-950" />
+      <div class="p-4 flex items-center justify-between gap-4 bg-white">
+        <div>
+          <div id="lightboxTitle" class="font-bold text-ink text-base"></div>
+          <div id="lightboxSub" class="text-xs text-muted"></div>
+        </div>
+        <span class="text-xs text-stone-400">點擊外部或按 ESC 關閉</span>
+      </div>
+    </div>
+  </div>
 
-    <!-- 分類篩選的 JavaScript 程式碼 -->
-    <script>
-        function filterCategory(category, btn) {
-            // 切換按鈕的選取樣式
-            const buttons = document.querySelectorAll('.filter-btn');
-            buttons.forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
+  <!-- 頁尾 -->
+  <footer class="border-t border-stone-200/80 bg-white/70 py-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs sm:text-sm text-muted">
+      <div class="flex items-center gap-2">
+        <span>Info:</span>
+        <a href="https://x.com/ald1_place" target="_blank" rel="noopener noreferrer" class="font-semibold text-ink hover:text-amber-700 underline decoration-amber-400/60 underline-offset-4">
+          @ald1_place (X)
+        </a>
+        <span class="text-stone-300">|</span>
+        <span>Site by <strong class="text-ink font-semibold">@ald1.a1mem</strong></span>
+      </div>
+      <div class="text-xs text-stone-400">
+        朝聖前請留意店家營業時間與公休日資訊
+      </div>
+    </div>
+  </footer>
 
-            // 篩選卡片顯示與隱藏
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                if (category === 'all' || card.dataset.category === category) {
-                    card.style.display = 'block';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
+  <!-- 複製成功提示 Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 pointer-events-none opacity-0 translate-y-3 transition-all duration-300">
+    <div class="bg-ink text-white px-4 py-2.5 rounded-full shadow-lg text-sm font-medium flex items-center gap-2">
+      <i class="fa-solid fa-circle-check text-emerald-400"></i>
+      <span id="toastMsg">已複製地址</span>
+    </div>
+  </div>
+
+  <script>
+    // 指定的 8 個篩選標籤順序
+    const FILTER_TAGS = ["全部", "俊抒", "ARNO", "LEO", "相沅", "鑫隆", "安信", "相炫"];
+
+    // 朝聖地點資料（預設自動對應 ./${id}.png，若未上傳該圖檔則自動顯示漸層底圖＋圖示）
+    const PLACES_DATA = [
+      {
+        id: 1,
+        image: "1.jpg",
+        zhName: "啄木鳥青少年修煉院",
+        koName: "딱따구리 청소년수련원",
+        category: "拍攝地",
+        region: "京畿道 · 楊州市",
+        members: [],
+        source: "ONE DREAM FOREVER EP.19、20",
+        zhAddress: "京畿道 楊州市 光積面 賢石路 313-44",
+        koAddress: "경기 양주시 광적면 현석로 313-44",
+        note: "",
+        icon: "fa-campground",
+        gradient: "from-emerald-500/20 via-teal-300/15 to-lime-200/25",
+        accentColor: "text-emerald-800",
+        badgeBg: "bg-emerald-100/90 text-emerald-900 border-emerald-200",
+        naverUrl: "https://map.naver.com/p/search/경기%20양주시%20광적면%20현석로%20313-44",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=경기+양주시+광적면+현석로+313-44"
+      },
+      {
+        id: 2,
+        image: "2.jpg",
+        zhName: "Standard Bread 聖水店",
+        koName: "스탠다드브레드 성수",
+        category: "餐廳",
+        region: "首爾 · 聖水",
+        members: ["俊抒"],
+        source: "260916 俊抒 PC JP 日記",
+        zhAddress: "首爾市城東區聖水二路18街37號1樓",
+        koAddress: "서울 성동구 성수이로18길 37 1층",
+        note: "",
+        icon: "fa-bread-slice",
+        gradient: "from-amber-500/20 via-orange-300/15 to-yellow-200/25",
+        accentColor: "text-amber-800",
+        badgeBg: "bg-amber-100/90 text-amber-900 border-amber-200",
+        naverUrl: "https://map.naver.com/p/search/서울%20성동구%20성수이로18길%2037",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=서울+성동구+성수이로18길+37"
+      },
+      {
+        id: 3,
+        image: "3.jpg",
+        zhName: "陸會正宗鮭",
+        koName: "육회바른연어",
+        category: "餐廳",
+        region: "首爾 · 分店資訊待補",
+        members: ["俊抒"],
+        source: "260917 俊抒 PC",
+        zhAddress: "無詳細地址資訊",
+        koAddress: "",
+        note: "鮭魚蓋飯 & 鮭魚壽司",
+        icon: "fa-fish",
+        gradient: "from-rose-500/20 via-orange-300/15 to-amber-200/25",
+        accentColor: "text-rose-800",
+        badgeBg: "bg-rose-100/90 text-rose-900 border-rose-200",
+        naverUrl: "https://map.naver.com/p/search/육회바른연어",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=육회바른연어"
+      },
+      {
+        id: 4,
+        image: "4.jpg",
+        zhName: "石島海帶湯 弘大直營店",
+        koName: "돌섬미역국 홍대직영점",
+        category: "餐廳",
+        region: "首爾 · 弘大",
+        members: ["相沅"],
+        source: "260917 相沅 PC",
+        zhAddress: "首爾特別市麻浦區臥牛山路21街 12-6 1樓",
+        koAddress: "서울특별시 마포구 와우산로21길 12-6 1층",
+        note: "",
+        icon: "fa-bowl-food",
+        gradient: "from-teal-500/20 via-cyan-300/15 to-emerald-200/25",
+        accentColor: "text-teal-800",
+        badgeBg: "bg-teal-100/90 text-teal-900 border-teal-200",
+        naverUrl: "https://map.naver.com/p/search/서울특별시%20마포구%20와우산로21길%2012-6",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=서울특별시+마포구+와우산로21길+12-6"
+      },
+      {
+        id: 5,
+        image: "5.jpg",
+        zhName: "李如牛骨湯 總店",
+        koName: "이여곰탕 본점",
+        category: "餐廳",
+        region: "首爾 · 瑞草",
+        members: ["LEO"],
+        source: "260917 LEO PC",
+        zhAddress: "首爾特別市 瑞草區 瑞草大路46路 19-15",
+        koAddress: "서울 서초구 서초대로46길 19-15",
+        note: "",
+        icon: "fa-utensils",
+        gradient: "from-stone-500/20 via-amber-200/20 to-orange-100/30",
+        accentColor: "text-stone-800",
+        badgeBg: "bg-stone-200/80 text-stone-900 border-stone-300",
+        naverUrl: "https://map.naver.com/p/search/서울%20서초구%20서초대로46길%2019-15",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=서울+서초구+서초대로46길+19-15"
+      },
+      {
+        id: 6,
+        image: "6.jpg",
+        zhName: "Sandwiches & Go",
+        koName: "샌드위치 앤 고",
+        category: "餐廳",
+        region: "首爾 · 新村／延世",
+        members: ["俊抒"],
+        source: "260917 俊抒 PC",
+        zhAddress: "首爾特別市 西大門區 延世路2街 89 2樓局部",
+        koAddress: "서울특별시 서대문구 연세로2길 89 2층 일부",
+        note: "",
+        icon: "fa-burger",
+        gradient: "from-yellow-500/20 via-lime-300/15 to-amber-200/25",
+        accentColor: "text-yellow-900",
+        badgeBg: "bg-yellow-100/90 text-yellow-900 border-yellow-200",
+        naverUrl: "https://map.naver.com/p/search/서울특별시%20서대문구%20연세로2길%2089",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=서울특별시+서대문구+연세로2길+89"
+      },
+      {
+        id: 7,
+        image: "7.jpg",
+        zhName: "白風車製菓店",
+        koName: "하얀풍차제과점",
+        category: "餐廳",
+        region: "京畿道 · 水原靈通",
+        members: ["相炫"],
+        source: "260909 相炫 PC",
+        zhAddress: "京畿道 水原市 靈通區 靈通路 195 黃金廣場 1樓",
+        koAddress: "경기 수원시 영통구 영통로 195 골든스퀘어 1층",
+        note: "",
+        icon: "fa-cookie-bite",
+        gradient: "from-sky-500/20 via-indigo-200/20 to-amber-100/25",
+        accentColor: "text-sky-900",
+        badgeBg: "bg-sky-100/90 text-sky-900 border-sky-200",
+        naverUrl: "https://map.naver.com/p/search/경기%20수원시%20영통구%20영통로%20195",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=경기+수원시+영통구+영통로+195"
+      },
+      {
+        id: 8,
+        image: "8.jpg",
+        zhName: "蔚山療癒民宿",
+        koName: "울산 힐링펜션",
+        category: "拍攝地",
+        region: "蔚山 · 東區朱田",
+        members: [],
+        source: "Untitled_27",
+        zhAddress: "蔚山廣域市 東區 朱田海岸길 212",
+        koAddress: "울산 동구 주전해안길 212",
+        note: "",
+        icon: "fa-house-chimney-window",
+        gradient: "from-cyan-500/20 via-sky-300/15 to-teal-200/25",
+        accentColor: "text-cyan-900",
+        badgeBg: "bg-cyan-100/90 text-cyan-900 border-cyan-200",
+        naverUrl: "https://map.naver.com/p/search/울산%20동구%20주전해안길%20212",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=울산+동구+주전해안길+212"
+      },
+      {
+        id: 9,
+        image: "9.jpg",
+        zhName: "旺山海水浴場",
+        koName: "왕산해수욕장",
+        category: "拍攝地",
+        region: "仁川 · 中區乙旺洞",
+        members: [],
+        source: "ONE DREAM FOREVER EP.23",
+        zhAddress: "仁川廣域市 中區 乙旺洞 旺山海水浴場",
+        koAddress: "인천 중구 을왕동 왕산해수욕장",
+        note: "",
+        icon: "fa-umbrella-beach",
+        gradient: "from-blue-500/20 via-cyan-300/15 to-amber-100/30",
+        accentColor: "text-blue-900",
+        badgeBg: "bg-blue-100/90 text-blue-900 border-blue-200",
+        naverUrl: "https://map.naver.com/p/search/인천%20중구%20을왕동%20왕산해수욕장",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=인천+중구+을왕동+왕산해수욕장"
+      },
+      {
+        id: 10,
+        image: "10.jpg",
+        zhName: "Jayden 29 民宿",
+        koName: "제이든29펜션",
+        category: "拍攝地",
+        region: "仁川 · 中區龍游",
+        members: [],
+        source: "ONE DREAM FOREVER EP.24",
+        zhAddress: "仁川廣域市 中區 龍游西路302번길 18 Jayden 29 民宿",
+        koAddress: "인천 중구 용유서로302번길 18 제이든29 펜션",
+        note: "",
+        icon: "fa-water",
+        gradient: "from-indigo-500/20 via-purple-300/15 to-pink-200/20",
+        accentColor: "text-indigo-900",
+        badgeBg: "bg-indigo-100/90 text-indigo-900 border-indigo-200",
+        naverUrl: "https://map.naver.com/p/search/인천%20중구%20용유서로302번길%2018",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=인천+중구+용유서로302번길+18"
+      },
+      {
+        id: 11,
+        image: "11.jpg",
+        zhName: "Nabeya / 鍋屋",
+        koName: "나베야",
+        category: "餐廳",
+        region: "連鎖店",
+        members: ["LEO"],
+        source: "260910 LEO PC",
+        zhAddress: "無詳細地址資訊",
+        koAddress: "",
+        note: "連鎖店",
+        icon: "fa-fire-burner",
+        gradient: "from-red-500/20 via-orange-300/15 to-amber-200/25",
+        accentColor: "text-red-900",
+        badgeBg: "bg-red-100/90 text-red-900 border-red-200",
+        naverUrl: "https://map.naver.com/p/search/나베야",
+        googleUrl: "https://www.google.com/maps/search/?api=1&query=나베야"
+      }
+    ];
+
+    const STORAGE_KEY = "ald1_place_visited_ids_v1";
+    let visitedIds = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]"));
+
+    let state = {
+      search: "",
+      category: "全部",
+      tag: "全部",
+      visitedOnly: false
+    };
+
+    function getPlaceImageSrc(place) {
+      if (place.image && place.image.trim() !== "") return place.image.trim();
+      return `./${place.id}.png`;
+    }
+
+    function saveVisited() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify([...visitedIds]));
+      updateStatsAndProgress();
+    }
+
+    function toggleVisited(id, event) {
+      if (event) event.stopPropagation();
+      if (visitedIds.has(id)) {
+        visitedIds.delete(id);
+        showToast("已取消踩點標記");
+      } else {
+        visitedIds.add(id);
+        showToast("已加入「我的朝聖進度」！");
+      }
+      saveVisited();
+      renderPlaces();
+    }
+
+    function toggleVisitedOnly() {
+      state.visitedOnly = !state.visitedOnly;
+      const btn = document.getElementById("visitedToggleBtn");
+      if (state.visitedOnly) {
+        btn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold border transition-all cursor-pointer bg-rose-500 text-white border-rose-500 shadow-sm";
+        btn.querySelector(".fa-heart").className = "fa-solid fa-heart text-white";
+        btn.querySelector("#visitedBadgeCount").className = "px-1.5 py-0.2 rounded-full bg-white/25 text-white text-xs font-bold";
+      } else {
+        btn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold border transition-all cursor-pointer bg-white text-ink border-stone-200 hover:border-rose-300 hover:bg-rose-50/60";
+        btn.querySelector(".fa-heart").className = "fa-solid fa-heart text-rose-500";
+        btn.querySelector("#visitedBadgeCount").className = "px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 text-xs font-bold";
+      }
+      renderPlaces();
+    }
+
+    function setCategory(cat) {
+      state.category = cat;
+      document.querySelectorAll(".cat-btn").forEach(btn => {
+        const isActive = btn.dataset.cat === cat;
+        btn.className = isActive
+          ? "cat-btn active shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-ink text-white shadow-sm"
+          : "cat-btn shrink-0 px-4 py-2 rounded-xl text-sm font-semibold transition-all cursor-pointer bg-paper text-muted hover:text-ink hover:bg-stone-200/70";
+      });
+      renderPlaces();
+    }
+
+    function setTag(tag) {
+      state.tag = tag;
+      renderTagFilters();
+      renderPlaces();
+    }
+
+    function handleSearch(val) {
+      state.search = val.trim();
+      document.getElementById("clearSearchBtn").classList.toggle("hidden", !state.search);
+      renderPlaces();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("searchInput");
+      input.value = "";
+      handleSearch("");
+      input.focus();
+    }
+
+    function resetAllFilters() {
+      state = { search: "", category: "全部", tag: "全部", visitedOnly: false };
+      document.getElementById("searchInput").value = "";
+      document.getElementById("clearSearchBtn").classList.add("hidden");
+
+      const btn = document.getElementById("visitedToggleBtn");
+      btn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold border transition-all cursor-pointer bg-white text-ink border-stone-200 hover:border-rose-300 hover:bg-rose-50/60";
+      btn.querySelector(".fa-heart").className = "fa-solid fa-heart text-rose-500";
+      btn.querySelector("#visitedBadgeCount").className = "px-1.5 py-0.2 rounded-full bg-rose-100 text-rose-700 text-xs font-bold";
+
+      setCategory("全部");
+      renderTagFilters();
+      renderPlaces();
+    }
+
+    function getTagCount(tag) {
+      if (tag === "全部") return PLACES_DATA.length;
+      return PLACES_DATA.filter(p => Array.isArray(p.members) && p.members.includes(tag)).length;
+    }
+
+    function renderTagFilters() {
+      const container = document.getElementById("memberFilters");
+      container.innerHTML = FILTER_TAGS.map(tag => {
+        const count = getTagCount(tag);
+        const active = state.tag === tag;
+        return `
+          <button
+            onclick="setTag('${tag}')"
+            class="px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
+              active
+                ? "bg-amber-400 text-ink border-amber-500 shadow-xs"
+                : "bg-paper text-muted border-stone-200/80 hover:border-amber-300 hover:text-ink"
+            }"
+          >
+            ${tag} <span class="opacity-70">(${count})</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    function updateStatsAndProgress() {
+      const total = PLACES_DATA.length;
+      const filming = PLACES_DATA.filter(p => p.category === "拍攝地").length;
+      const food = PLACES_DATA.filter(p => p.category === "餐廳").length;
+      const visitedCount = PLACES_DATA.filter(p => visitedIds.has(p.id)).length;
+      const pct = total > 0 ? Math.round((visitedCount / total) * 100) : 0;
+
+      document.getElementById("statTotal").textContent = total;
+      document.getElementById("statFilming").textContent = filming;
+      document.getElementById("statFood").textContent = food;
+      document.getElementById("countAll").textContent = total;
+      document.getElementById("countFilming").textContent = filming;
+      document.getElementById("countFood").textContent = food;
+
+      document.getElementById("visitedBadgeCount").textContent = visitedCount;
+      document.getElementById("progressText").textContent = `${visitedCount} / ${total} (${pct}%)`;
+      document.getElementById("progressBar").style.width = `${pct}%`;
+    }
+
+    function copyText(text, label = "已複製") {
+      if (!text) return;
+      navigator.clipboard.writeText(text).then(() => {
+        showToast(`${label}：${text}`);
+      }).catch(() => {
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+        showToast(`${label}：${text}`);
+      });
+    }
+
+    let toastTimer;
+    function showToast(msg) {
+      const toast = document.getElementById("toast");
+      document.getElementById("toastMsg").textContent = msg;
+      toast.classList.remove("opacity-0", "translate-y-3");
+      toast.classList.add("opacity-100", "translate-y-0");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "translate-y-3");
+      }, 2200);
+    }
+
+    function openLightbox(src, title, sub) {
+      document.getElementById("lightboxImg").src = src;
+      document.getElementById("lightboxTitle").textContent = title;
+      document.getElementById("lightboxSub").textContent = sub;
+      document.getElementById("lightboxModal").classList.remove("hidden");
+    }
+
+    function closeLightbox() {
+      document.getElementById("lightboxModal").classList.add("hidden");
+    }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+
+    function getFilteredPlaces() {
+      return PLACES_DATA.filter(place => {
+        if (state.category !== "全部" && place.category !== state.category) return false;
+        if (state.tag !== "全部") {
+          if (!Array.isArray(place.members) || !place.members.includes(state.tag)) return false;
         }
-    </script>
+        if (state.visitedOnly && !visitedIds.has(place.id)) return false;
 
+        if (state.search) {
+          const q = state.search.toLowerCase();
+          const haystack = [
+            place.zhName,
+            place.koName,
+            place.region,
+            place.source,
+            place.zhAddress,
+            place.koAddress,
+            place.note,
+            ...(place.members || [])
+          ].join(" ").toLowerCase();
+          if (!haystack.includes(q)) return false;
+        }
+        return true;
+      });
+    }
+
+    function renderPlaces() {
+      const filtered = getFilteredPlaces();
+      const grid = document.getElementById("placesGrid");
+      const empty = document.getElementById("emptyState");
+      const summary = document.getElementById("resultSummary");
+      const resetBtn = document.getElementById("resetFiltersBtn");
+
+      const hasActiveFilter = state.search || state.category !== "全部" || state.tag !== "全部" || state.visitedOnly;
+      resetBtn.classList.toggle("hidden", !hasActiveFilter);
+
+      const parts = [];
+      if (state.visitedOnly) parts.push("已踩點");
+      if (state.category !== "全部") parts.push(state.category);
+      if (state.tag !== "全部") parts.push(state.tag);
+      if (state.search) parts.push(`「${state.search}」`);
+      summary.textContent = parts.length
+        ? `篩選結果：共 ${filtered.length} 個地點（${parts.join(" · ")}）`
+        : `顯示全部 ${filtered.length} 個朝聖地點`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        empty.classList.remove("hidden");
+        return;
+      }
+
+      empty.classList.add("hidden");
+
+      grid.innerHTML = filtered.map(place => {
+        const isVisited = visitedIds.has(place.id);
+        const isFilming = place.category === "拍攝地";
+        const hasAddress = place.koAddress && place.koAddress.trim() !== "";
+        const imgSrc = getPlaceImageSrc(place);
+
+        const categoryBadge = isFilming
+          ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-indigo-50 text-indigo-700 border border-indigo-200/80"><i class="fa-solid fa-clapperboard text-[10px]"></i>拍攝地</span>`
+          : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-amber-50 text-amber-800 border border-amber-200/80"><i class="fa-solid fa-utensils text-[10px]"></i>餐廳</span>`;
+
+        const noteHtml = place.note
+          ? `<div class="mt-3 px-3 py-2 rounded-xl bg-amber-50/80 border border-amber-200/70 text-xs text-amber-950 flex items-start gap-2">
+               <i class="fa-regular fa-note-sticky text-amber-600 mt-0.5 shrink-0"></i>
+               <span class="font-medium">${place.note}</span>
+             </div>`
+          : "";
+
+        const mapsHtml = hasAddress
+          ? `<div class="grid grid-cols-2 gap-2 pt-3 border-t border-stone-100">
+               <a href="${place.naverUrl}" target="_blank" rel="noopener noreferrer"
+                  class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-[#03C75A]/10 text-[#029e47] hover:bg-[#03C75A] hover:text-white border border-[#03C75A]/25 transition-all">
+                 <i class="fa-solid fa-location-dot"></i>
+                 <span>Naver 地圖</span>
+               </a>
+               <a href="${place.googleUrl}" target="_blank" rel="noopener noreferrer"
+                  class="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl text-xs font-bold bg-[#4285F4]/10 text-[#2563eb] hover:bg-[#4285F4] hover:text-white border border-[#4285F4]/25 transition-all">
+                 <i class="fa-solid fa-map"></i>
+                 <span>Google 地圖</span>
+               </a>
+             </div>`
+          : `<div class="pt-3 border-t border-stone-100 flex items-center justify-between text-xs text-stone-400">
+               <span><i class="fa-regular fa-compass mr-1"></i>暫無詳細座標連結</span>
+               ${place.naverUrl ? `<a href="${place.naverUrl}" target="_blank" rel="noopener noreferrer" class="text-stone-600 hover:text-ink underline">搜尋名稱</a>` : ""}
+             </div>`;
+
+        return `
+          <article class="group bg-white rounded-3xl overflow-hidden border ${isVisited ? "border-rose-300 ring-2 ring-rose-500/15" : "border-stone-200/80"} shadow-card hover:shadow-cardHover transition-all duration-300 flex flex-col">
+            <!-- 卡片頂部預覽圖（若無圖片檔則自動顯示漸層＋圖示） -->
+            <div class="relative h-40 overflow-hidden bg-paper">
+              <img
+                src="${imgSrc}"
+                alt="${place.zhName}"
+                loading="lazy"
+                onclick="openLightbox('${imgSrc}', '${place.zhName.replace(/'/g, "\\'")}', '${place.koName.replace(/'/g, "\\'")} · ${place.source.replace(/'/g, "\\'")}')"
+                onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                class="w-full h-full object-cover cursor-zoom-in transition-transform duration-500 group-hover:scale-105"
+              />
+              <div style="display:none" class="w-full h-full bg-gradient-to-br ${place.gradient} items-center justify-center">
+                <i class="fa-solid ${place.icon} text-3xl ${place.accentColor} opacity-45 group-hover:scale-110 transition-transform duration-300"></i>
+              </div>
+              <div class="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-black/15 pointer-events-none"></div>
+
+              <div class="absolute top-3 left-3 z-10 pointer-events-none">
+                <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold border backdrop-blur-xs ${place.badgeBg}">
+                  <i class="fa-solid fa-location-pin text-[10px]"></i>
+                  ${place.region}
+                </span>
+              </div>
+
+              <button
+                onclick="toggleVisited(${place.id}, event)"
+                aria-label="標記已踩點"
+                title="${isVisited ? "取消已踩點" : "標記為已踩點"}"
+                class="absolute top-3 right-3 z-10 w-9 h-9 rounded-full flex items-center justify-center transition-all cursor-pointer shadow-sm ${
+                  isVisited
+                    ? "bg-rose-500 text-white animate-pop"
+                    : "bg-white/90 text-stone-400 hover:text-rose-500 hover:bg-white"
+                }"
+              >
+                <i class="fa-solid fa-heart text-sm"></i>
+              </button>
+            </div>
+
+            <!-- 卡片內容區 -->
+            <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+              <div class="space-y-3">
+                <div class="flex items-start justify-between gap-2">
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap mb-1">
+                      ${categoryBadge}
+                      ${isVisited ? `<span class="text-[11px] font-bold text-rose-600 bg-rose-50 px-2 py-0.5 rounded-full border border-rose-200">✓ 已踩點</span>` : ""}
+                    </div>
+                    <h2 class="text-lg font-bold text-ink leading-snug group-hover:text-amber-900 transition-colors">
+                      ${place.zhName}
+                    </h2>
+                    <p class="font-kr text-xs text-muted font-medium mt-0.5">
+                      ${place.koName}
+                    </p>
+                  </div>
+                </div>
+
+                <div class="flex items-center gap-1.5 text-xs text-muted bg-paper px-3 py-2 rounded-xl border border-stone-200/60">
+                  <i class="fa-solid fa-film text-amber-600 shrink-0"></i>
+                  <span class="font-semibold text-stone-500 shrink-0">出處：</span>
+                  <span class="text-ink font-medium truncate" title="${place.source}">${place.source}</span>
+                </div>
+
+                <div class="space-y-1.5 text-xs">
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="text-ink leading-relaxed">
+                      <span class="font-semibold text-stone-500 mr-1">地址：</span>
+                      <span class="${hasAddress ? "text-ink" : "text-stone-400 italic"}">${place.zhAddress}</span>
+                    </div>
+                  </div>
+                  ${hasAddress ? `
+                    <div class="flex items-center justify-between gap-2 bg-stone-50 px-2.5 py-1.5 rounded-lg border border-stone-200/70">
+                      <span class="font-kr text-[11px] text-stone-600 truncate" title="${place.koAddress}">${place.koAddress}</span>
+                      <button
+                        onclick="copyText('${place.koAddress.replace(/'/g, "\\'")}', '已複製韓文地址')"
+                        class="shrink-0 inline-flex items-center gap-1 text-[11px] font-semibold text-amber-800 hover:text-amber-950 bg-amber-100/80 hover:bg-amber-200/80 px-2 py-0.5 rounded-md transition-colors cursor-pointer"
+                        title="複製韓文地址"
+                      >
+                        <i class="fa-regular fa-copy"></i>
+                        <span>複製</span>
+                      </button>
+                    </div>
+                  ` : ""}
+                </div>
+
+                ${noteHtml}
+              </div>
+
+              ${mapsHtml}
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    renderTagFilters();
+    updateStatsAndProgress();
+    renderPlaces();
+  </script>
 </body>
 </html>
