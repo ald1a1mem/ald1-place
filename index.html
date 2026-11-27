@@ -277,7 +277,7 @@
 
   <script>
     // 指定的 8 個篩選標籤順序
-    const FILTER_TAGS = ["全部", "俊抒", "ARNO", "LEO", "相沅", "鑫隆", "安信", "相炫"];
+    const FILTER_TAGS = ["全部", "俊抒", "ARNO", "LEO", "虔佑", "相沅", "鑫隆", "安信", "相炫"];
 
     // 朝聖地點資料（預設自動對應 ./${id}.png，若未上傳該圖檔則自動顯示漸層底圖＋圖示）
     const PLACES_DATA = [
@@ -590,25 +590,36 @@
       return PLACES_DATA.filter(p => Array.isArray(p.members) && p.members.includes(tag)).length;
     }
 
-    function renderTagFilters() {
-      const container = document.getElementById("memberFilters");
-      container.innerHTML = FILTER_TAGS.map(tag => {
-        const count = getTagCount(tag);
-        const active = state.tag === tag;
-        return `
-          <button
-            onclick="setTag('${tag}')"
-            class="px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer border ${
-              active
-                ? "bg-amber-400 text-ink border-amber-500 shadow-xs"
-                : "bg-paper text-muted border-stone-200/80 hover:border-amber-300 hover:text-ink"
-            }"
-          >
-            ${tag} <span class="opacity-70">(${count})</span>
-          </button>
-        `;
-      }).join("");
+function renderTagFilters() {
+  const container = document.getElementById("memberFilters");
+  container.innerHTML = FILTER_TAGS.map(tag => {
+    const count = getTagCount(tag);
+    const active = state.tag === tag;
+    const isHiatus = tag === "虔佑";
+
+    let btnStyle = "";
+    if (isHiatus) {
+      // 虔佑（暫停活動）：預設為更淡的半透明淺灰風格，點選時則呈現柔和的淺琥珀色
+      btnStyle = active
+        ? "bg-amber-200/80 text-stone-700 border-amber-300/80"
+        : "bg-stone-100/50 text-stone-400 border-stone-200/50 hover:text-stone-600 hover:bg-stone-100/90";
+    } else {
+      // 其他成員：維持原本鮮明對比
+      btnStyle = active
+        ? "bg-amber-400 text-ink border-amber-500 shadow-xs"
+        : "bg-paper text-muted border-stone-200/80 hover:border-amber-300 hover:text-ink";
     }
+
+    return `
+      <button
+        onclick="setTag('${tag}')"
+        class="px-3 py-1 rounded-full text-xs font-semibold transition-all cursor-pointer border ${btnStyle}"
+      >
+        ${tag} <span class="opacity-70">(${count})</span>
+      </button>
+    `;
+  }).join("");
+}
 
     function updateStatsAndProgress() {
       const total = PLACES_DATA.length;
